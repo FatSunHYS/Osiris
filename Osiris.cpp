@@ -27,6 +27,7 @@
  =====================================*/
 #include "Osiris.h"
 #include "EAPOL.h"
+#include "inifile.h"
 
 /*=====================================
  Variables definition
@@ -35,6 +36,7 @@
 /*=====================================
  Functions definition
  =====================================*/
+void daemonize();
 
 /*=====================================
  Implementation of functions
@@ -42,10 +44,23 @@
 
 int main()
 {
+	char TemperoryBuffer[ 1024 ];
 
-	// Read configuration files.
-	strcpy( AuthorityUserName, "201520130769" );
-	strcpy( AuthorityPassword, "201520130769" );
+	memset( AuthorityUserName, 0, 13 );
+	memset( AuthorityPassword, 0, 13 );
+
+	ifstream *pFile = new ifstream();
+	pFile->open( "./Info.txt" );
+	pFile->getline( TemperoryBuffer, 1024 );
+	memcpy( AuthorityUserName, TemperoryBuffer, 12 );
+
+	pFile->getline( TemperoryBuffer, 1024 );
+	memcpy( AuthorityPassword, TemperoryBuffer, 12 );
+
+	pFile->close();
+
+	printf( "AuthorityUserName = %s\n", AuthorityUserName );
+	printf( "AuthorityPassword = %s\n", AuthorityPassword );
 
 	// Initial the device.
 	if( EAPOL_InitialDevice() == false )
@@ -63,10 +78,13 @@ int main()
 		return 0;
 	}
 
+	// Daemonize.
+#if 0
+	daemonize();
+#endif
+
 	// Print out the messages of the eth0.
 	EAPOL_PrintOutNetworkStatus();
-
-	// Daemonize.
 
 	// Begin to capture packets.
 	if( EAPOL_AuthorityThreadCreate() == false )
@@ -147,3 +165,20 @@ int main()
 	return 0;
 }
 
+void daemonize()
+{
+	pid_t pid;
+
+	pid = fork();
+	if( pid < 0 )
+	{
+		printf( "fork of daemon failed: %s", strerror( errno ) );
+		exit( -1 );
+	}else if( pid > 0 )
+	{
+		exit( 0 );
+	}
+
+	setsid();
+
+}

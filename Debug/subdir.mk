@@ -5,7 +5,8 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../EAPOL.cpp \
-../Osiris.cpp 
+../Osiris.cpp \
+../inifile.cpp 
 
 C_SRCS += \
 ../md5.c 
@@ -13,11 +14,13 @@ C_SRCS += \
 OBJS += \
 ./EAPOL.o \
 ./Osiris.o \
+./inifile.o \
 ./md5.o 
 
 CPP_DEPS += \
 ./EAPOL.d \
-./Osiris.d 
+./Osiris.d \
+./inifile.d 
 
 C_DEPS += \
 ./md5.d 

@@ -31,6 +31,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <fstream>
+using namespace std;
 
 /*=====================================
  Global Constants
